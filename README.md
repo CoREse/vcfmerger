@@ -1,4 +1,5 @@
-# VCF Merger
+# VCF Merger (WIP)
+<h1 style="color:red"> Warning: This is a project that is working in progress(WIP), it is NOT fully functional! </h1>
 ## What is vcfmerger?
 Like its name, it merges multiple vcf files into one. It does things similar to vcf-merge in vcf-tools.
 
