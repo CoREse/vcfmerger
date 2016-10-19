@@ -23,5 +23,12 @@ or you can do
 make PREFIX=/some/prefix install
 to indicate your own prefix(instead of the default /usr/bin).
 
+If you want to remove the program, just
+make remove
+
+or
+
+make PREFIX=/some/prefix remove
+
 ## Usage
 You can run vcfmerger without arguments to see help.
