@@ -1,9 +1,10 @@
 /* File: vcfmerger.cpp
  * Author: CRE
- * Last Edited: Wed Oct 19 17:10:27 2016
+ * Last Edited: Wed Oct 19 18:31:55 2016
  */
 
 #include "crelib/crelib.h"
+#include "vcfmerger.h"
 #include <iostream>
 #include <cstring>
 #include <string>
@@ -13,10 +14,6 @@
 #include <vector>
 using namespace cre;
 using namespace std;
-
-#define BUFFER_SIZE 320000000
-#define NAME_BUFFER_SIZE 1024
-#define SMALL_BUFFER_SIZE 1024000
 
 static inline void getRootName(const char * FileName, char * RootName);
 static inline void mergeHead(FILE* LFile, FILE* RFile, FILE* OutFile, char* LBuffer, char* RBuffer, const char * RRootName, uint & LSampleNum, uint & RSampleNum);
@@ -55,9 +52,14 @@ void merge2(const char * LFileName, const char * RFileName, const char * OutFile
 	FILE * LFile=fopen(LFileName, "r");
 	if (LFile==NULL) die("Open left file failed!");
 	FILE * RFile=fopen(RFileName, "r");
+	FILE * OutFile=NULL;
 	if (RFile==NULL) die("Open right file failed!");
-	FILE * OutFile=fopen(OutFileName, "w");
-	if (OutFile==NULL) die("Open out file failed!");
+	if (OutFileName[0]=='\0') OutFile=stdout;
+	else
+	{
+		OutFile=fopen(OutFileName, "w");
+		if (OutFile==NULL) die("Open out file failed!");
+	}
 
 	char *LBuffer=myalloc(BUFFER_SIZE,char);
 	char *RBuffer=myalloc(BUFFER_SIZE,char);
@@ -203,34 +205,34 @@ class Site
 	Site& operator=(const Site&) {return *this;}
 	Site(const Site&) {};
 	public:
-		uint Pos;
-		char *Chrom;
-		Site()
-			:Pos(0)
-		{
-			Chrom=myalloc(NAME_BUFFER_SIZE, char);
-		}
-		~Site()
-		{
-			if (Chrom!=NULL) free(Chrom);
-		}
-		bool operator<(const Site&B) const
-		{
-			if (chromCompare(Chrom, B.Chrom)>0) return false;
-			if (chromCompare(Chrom,B.Chrom)<0) return true;
-			return Pos<B.Pos;
-		}
-		bool operator>(const Site&B) const
-		{
-			if (chromCompare(Chrom,B.Chrom)<0) return false;
-			if (chromCompare(Chrom,B.Chrom)>0) return true;
-			return Pos>B.Pos;
-		}
-		bool operator==(const Site&B) const
-		{
-			if (Pos==B.Pos&&chromCompare(Chrom,B.Chrom)==0) return true;
-			return false;
-		}
+	uint Pos;
+	char *Chrom;
+	Site()
+		:Pos(0)
+	{
+		Chrom=myalloc(NAME_BUFFER_SIZE, char);
+	}
+	~Site()
+	{
+		if (Chrom!=NULL) free(Chrom);
+	}
+	bool operator<(const Site&B) const
+	{
+		if (chromCompare(Chrom, B.Chrom)>0) return false;
+		if (chromCompare(Chrom,B.Chrom)<0) return true;
+		return Pos<B.Pos;
+	}
+	bool operator>(const Site&B) const
+	{
+		if (chromCompare(Chrom,B.Chrom)<0) return false;
+		if (chromCompare(Chrom,B.Chrom)>0) return true;
+		return Pos>B.Pos;
+	}
+	bool operator==(const Site&B) const
+	{
+		if (Pos==B.Pos&&chromCompare(Chrom,B.Chrom)==0) return true;
+		return false;
+	}
 };
 
 static inline void getSite(const char * Buffer, Site& TheSite)
@@ -349,10 +351,4 @@ static inline void mergeSites(FILE* LFile, FILE* RFile, FILE* OutFile, char* LBu
 	free(RRef);
 	free(LAlt);
 	free(RAlt);
-}
-
-int main ()
-{
-	merge2("a.vcf", "b.vcf", "c.vcf");
-	return 0;
 }
