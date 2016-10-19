@@ -1,6 +1,6 @@
 /* File: vcfmerger.cpp
  * Author: CRE
- * Last Edited: Tue Oct 18 17:10:34 2016
+ * Last Edited: Wed Oct 19 14:14:54 2016
  */
 
 #include "crelib/crelib.h"
@@ -248,8 +248,8 @@ static inline void mergeSites(FILE* LFile, FILE* RFile, FILE* OutFile, char* LBu
 	{
 		if (!LReside) LBuffer[0]='\0';
 		if (!RReside) RBuffer[0]='\0';
-		if (!feof(LFile)) fgets(LBuffer, BUFFER_SIZE, LFile);
-		if (!feof(RFile)) fgets(RBuffer, BUFFER_SIZE, RFile);
+		if (!feof(LFile)&&!LReside) fgets(LBuffer, BUFFER_SIZE, LFile);
+		if (!feof(RFile)&&!RReside) fgets(RBuffer, BUFFER_SIZE, RFile);
 		LReside=false;
 		RReside=false;
 		LLength=strlen(LBuffer);
