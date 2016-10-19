@@ -32,7 +32,7 @@ to indicate your own prefix(instead of the default /usr/bin).
 If you want to remove the program, just
 
 ```
-make remove
+sudo make remove
 ```
 
 or
