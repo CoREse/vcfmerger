@@ -1,6 +1,6 @@
 /* File: vcfmerger.cpp
  * Author: CRE
- * Last Edited: Wed Oct 19 17:06:40 2016
+ * Last Edited: Wed Oct 19 17:10:27 2016
  */
 
 #include "crelib/crelib.h"
@@ -16,7 +16,7 @@ using namespace std;
 
 #define BUFFER_SIZE 320000000
 #define NAME_BUFFER_SIZE 1024
-#define SMALL_BUFFER_SIZE 1024
+#define SMALL_BUFFER_SIZE 1024000
 
 static inline void getRootName(const char * FileName, char * RootName);
 static inline void mergeHead(FILE* LFile, FILE* RFile, FILE* OutFile, char* LBuffer, char* RBuffer, const char * RRootName, uint & LSampleNum, uint & RSampleNum);
