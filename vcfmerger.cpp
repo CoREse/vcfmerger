@@ -1,6 +1,6 @@
 /* File: vcfmerger.cpp
  * Author: CRE
- * Last Edited: Wed Oct 19 14:27:21 2016
+ * Last Edited: Wed Oct 19 17:04:01 2016
  */
 
 #include "crelib/crelib.h"
@@ -238,6 +238,11 @@ static inline void getSite(const char * Buffer, Site& TheSite)
 	sscanf(Buffer,"%s %u",TheSite.Chrom, &(TheSite.Pos));
 }
 
+static inline void getRefNAlt(const char * Buffer, char * Ref, char * Alt)
+{
+	sscanf (Buffer, "%s %s %s %s %s", Ref,Ref,Ref, Ref, Alt);
+}
+
 static inline uint findTheDataOutset(const char * Buffer, uint Length=0)//return the index of the first varriant call, you can give the Length of Buffer to avoid recalculating.
 {
 	if (Length==0) Length=strlen(Buffer);
@@ -258,6 +263,10 @@ static inline void mergeSites(FILE* LFile, FILE* RFile, FILE* OutFile, char* LBu
 {
 	uint LLength, RLength, RDIndex;
 	Site LSite, RSite;
+	char* LRef=myalloc(SMALL_BUFFER_SIZE, char);
+	char* RRef=myalloc(SMALL_BUFFER_SIZE, char);
+	char* LAlt=myalloc(SMALL_BUFFER_SIZE, char);
+	char* RAlt=myalloc(SMALL_BUFFER_SIZE, char);
 	bool LReside=false, RReside=false;
 	do
 	{
@@ -314,11 +323,24 @@ static inline void mergeSites(FILE* LFile, FILE* RFile, FILE* OutFile, char* LBu
 			}
 			else
 			{
-				removeTailingN(LBuffer,LLength);
-				removeTailingN(RBuffer,RLength);
-				RDIndex=findTheDataOutset(RBuffer,RLength);
-				fprintf(OutFile,"\n%s", LBuffer);
-				if (RSampleNum!=0) fprintf(OutFile,"\t%s",RBuffer+RDIndex);
+				getRefNAlt(LBuffer,LRef, LAlt);
+				getRefNAlt(RBuffer,RRef, RAlt);
+
+				if (strcmp(LRef, RRef)==0&&strcmp(LAlt,RAlt)==0)
+				{
+					removeTailingN(LBuffer,LLength);
+					removeTailingN(RBuffer,RLength);
+					RDIndex=findTheDataOutset(RBuffer,RLength);
+					fprintf(OutFile,"\n%s", LBuffer);
+					if (RSampleNum!=0) fprintf(OutFile,"\t%s",RBuffer+RDIndex);
+				}
+				else
+				{
+					RReside=true;
+					removeTailingN(LBuffer,LLength);
+					fprintf(OutFile,"\n%s", LBuffer);
+					for (uint i=0;i<RSampleNum;++i) fprintf(OutFile,"\t.|.");
+				}
 			}
 		}
 	}
