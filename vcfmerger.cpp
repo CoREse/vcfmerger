@@ -1,6 +1,6 @@
 /* File: vcfmerger.cpp
  * Author: CRE
- * Last Edited: Wed Oct 19 17:04:01 2016
+ * Last Edited: Wed Oct 19 17:06:40 2016
  */
 
 #include "crelib/crelib.h"
@@ -345,6 +345,10 @@ static inline void mergeSites(FILE* LFile, FILE* RFile, FILE* OutFile, char* LBu
 		}
 	}
 	while(!(feof(LFile)&&feof(RFile)));
+	free(LRef);
+	free(RRef);
+	free(LAlt);
+	free(RAlt);
 }
 
 int main ()
