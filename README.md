@@ -20,8 +20,8 @@ make
 sudo make install
 
 or you can do
-PREFIX=/some/prefix make install
+make PREFIX=/some/prefix install
 to indicate your own prefix(instead of the default /usr/bin).
 
-##Usage
+## Usage
 You can run vcfmerger without arguments to see help.
