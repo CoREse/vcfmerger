@@ -3,8 +3,8 @@ CPPFLAGS= -Wall -O3
 LDFLAGS=
 LIBS=
 
-VCFMERGER_OBJS=vcfmerger.o
-VCFMERGER_HEADERS=
+VCFMERGER_OBJS=vcfmerger.o main.o
+VCFMERGER_HEADERS=vcfmerger.h
 LIBCRE=crelib/libcre.a
 LIBCRE_OBJS=crelib/*
 
