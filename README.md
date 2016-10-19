@@ -40,6 +40,7 @@ or
 ```
 make PREFIX=/some/prefix remove
 ```
+.
 
 ## Usage
 You can run vcfmerger without arguments to see help.
