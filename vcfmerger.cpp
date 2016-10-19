@@ -1,6 +1,6 @@
 /* File: vcfmerger.cpp
  * Author: CRE
- * Last Edited: Wed Oct 19 14:14:54 2016
+ * Last Edited: Wed Oct 19 14:27:21 2016
  */
 
 #include "crelib/crelib.h"
@@ -30,6 +30,21 @@ static inline void removeTailingN(char * str, uint Length=0)//to remove a tailin
 	{
 		str[Length]='\0';
 	}
+}
+
+static inline int chromCompare(const char * A, const char * B)//return -1 if A<B, 0 if A=B, 1 if A>B
+{
+	if (strcmp(A,"MT")==0)
+	{
+		if (strcmp(A,B)==0) return 0;
+		else return 1;
+	}
+	if (strcmp(B,"MT")==0)
+	{
+		if (strcmp(A,B)==0) return 0;
+		else return -1;
+	}
+	return strcmp(A,B);
 }
 
 void merge2(const char * LFileName, const char * RFileName, const char * OutFileName)
@@ -201,19 +216,19 @@ class Site
 		}
 		bool operator<(const Site&B) const
 		{
-			if (strcmp(Chrom,B.Chrom)>0) return false;
-			if (strcmp(Chrom,B.Chrom)<0) return true;
+			if (chromCompare(Chrom, B.Chrom)>0) return false;
+			if (chromCompare(Chrom,B.Chrom)<0) return true;
 			return Pos<B.Pos;
 		}
 		bool operator>(const Site&B) const
 		{
-			if (strcmp(Chrom,B.Chrom)<0) return false;
-			if (strcmp(Chrom,B.Chrom)>0) return true;
+			if (chromCompare(Chrom,B.Chrom)<0) return false;
+			if (chromCompare(Chrom,B.Chrom)>0) return true;
 			return Pos>B.Pos;
 		}
 		bool operator==(const Site&B) const
 		{
-			if (Pos==B.Pos&&strcmp(Chrom,B.Chrom)==0) return true;
+			if (Pos==B.Pos&&chromCompare(Chrom,B.Chrom)==0) return true;
 			return false;
 		}
 };
