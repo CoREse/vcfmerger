@@ -14,7 +14,8 @@ This tool is written in C++, and aims to merge numerous (say, 1 million) human g
 When two files have different alts at same position, it simply merge them into two lines of vcf file, for speed and simplicity. I know it violents vcf specifications, but for pbwt, it doesn't matter, as pbwt will divide multi alts into different sites.
 
 ## Make and Installation
-```git clone https://github.com/CoREse/vcfmerger
+```
+git clone https://github.com/CoREse/vcfmerger
 cd vcfmerger
 make
 sudo make install
@@ -22,19 +23,22 @@ sudo make install
 
 or you can do
 
-```make PREFIX=/some/prefix install
+```
+make PREFIX=/some/prefix install
 ```
 
 to indicate your own prefix(instead of the default /usr/bin).
 
 If you want to remove the program, just
 
-```make remove
+```
+make remove
 ```
 
 or
 
-```make PREFIX=/some/prefix remove
+```
+make PREFIX=/some/prefix remove
 ```
 
 ## Usage
