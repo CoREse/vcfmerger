@@ -15,15 +15,23 @@ When two files have different alts at same position, it simply merge them into t
 
 ## Make and Installation
 git clone https://github.com/CoREse/vcfmerger
+
 cd vcfmerger
+
 make
+
 sudo make install
 
+
 or you can do
+
 make PREFIX=/some/prefix install
+
 to indicate your own prefix(instead of the default /usr/bin).
 
+
 If you want to remove the program, just
+
 make remove
 
 or
