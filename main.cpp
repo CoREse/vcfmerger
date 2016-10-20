@@ -1,6 +1,6 @@
 /* File: main.cpp
  * Author: CRE
- * Last Edited: Wed Oct 19 18:23:47 2016
+ * Last Edited: Thu Oct 20 15:02:59 2016
  */
 
 #include "vcfmerger.h"
@@ -16,7 +16,7 @@ static inline void printHelp()
 	die("Usage:\n"\
 			"\tvcfmerger vcf1 vcf2 ... > merged.vcf\n"\
 			"or\tvcfmerger vcf1 vcf2 ... -o merged.vcf\n"\
-			"Warning: This program may generate or overwrite two temple files in this directory, they are %s and %s. If the program ends normal, they would be deleted as well. Although I don't think you have those files in your directory, but just be aware of it.", TEMP_FILE_NAME1, TEMP_FILE_NAME2);
+			"Warning: This program may generate or overwrite two temple files in this directory, they are %s and %s. If the program ends normal, they would be deleted as well. Although I don't think you have those files in your directory, just be aware of it.", TEMP_FILE_NAME1, TEMP_FILE_NAME2);
 }
 
 void removeTempFiles()
