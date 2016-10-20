@@ -3,6 +3,8 @@ CPPFLAGS= -Wall -O3
 LDFLAGS=
 LIBS=
 
+PREFIX=/usr/bin
+
 VCFMERGER_OBJS=vcfmerger.o main.o
 VCFMERGER_HEADERS=vcfmerger.h
 LIBCRE=crelib/libcre.a
@@ -20,3 +22,10 @@ $(LIBCRE):$(LIBCRE_OBJS)
 
 clean:
 	rm *.o vcfmerger
+
+install:all
+	install -d $(PREFIX)
+	install vcfmerger $(PREFIX)
+
+remove:
+	rm $(PREFIX)/vcfmerger
