@@ -1,6 +1,6 @@
 /* File: vcfmerger.cpp
  * Author: CRE
- * Last Edited: Wed Oct 19 18:31:55 2016
+ * Last Edited: Thu Oct 20 14:52:19 2016
  */
 
 #include "crelib/crelib.h"
@@ -265,10 +265,10 @@ static inline void mergeSites(FILE* LFile, FILE* RFile, FILE* OutFile, char* LBu
 {
 	uint LLength, RLength, RDIndex;
 	Site LSite, RSite;
-	char* LRef=myalloc(SMALL_BUFFER_SIZE, char);
-	char* RRef=myalloc(SMALL_BUFFER_SIZE, char);
-	char* LAlt=myalloc(SMALL_BUFFER_SIZE, char);
-	char* RAlt=myalloc(SMALL_BUFFER_SIZE, char);
+	char* LRef=myalloc(ALT_BUFFER_SIZE, char);
+	char* RRef=myalloc(ALT_BUFFER_SIZE, char);
+	char* LAlt=myalloc(ALT_BUFFER_SIZE, char);
+	char* RAlt=myalloc(ALT_BUFFER_SIZE, char);
 	bool LReside=false, RReside=false;
 	do
 	{

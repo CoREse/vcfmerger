@@ -3,7 +3,8 @@
 
 #define BUFFER_SIZE 320000000
 #define NAME_BUFFER_SIZE 1024
-#define SMALL_BUFFER_SIZE 1024000
+#define SMALL_BUFFER_SIZE 1024
+#define ALT_BUFFER_SIZE 20480000
 
 void merge2(const char * LFileName, const char * RFileName, const char * OutFileName);//OutFileName="" refers to stdout
 
