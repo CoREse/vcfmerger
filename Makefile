@@ -1,5 +1,5 @@
 CC=g++
-CPPFLAGS= -Wall -O3
+CPPFLAGS= -g -Wall -O3
 LDFLAGS=
 LIBS=
 

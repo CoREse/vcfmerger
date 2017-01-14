@@ -1,10 +1,11 @@
 /* File: main.cpp
  * Author: CRE
- * Last Edited: Thu Oct 20 15:53:41 2016
+ * Last Edited: Sat Jan 14 14:37:18 2017
  */
 
 #include "vcfmerger.h"
 #include <vector>
+#include <set>
 #include <string>
 #include <string.h>
 #include "crelib/crelib.h"
@@ -16,13 +17,22 @@ static inline void printHelp()
 	die("Usage:\n"\
 			"\tvcfmerger vcf1 vcf2 ... > merged.vcf\n"\
 			"or\tvcfmerger vcf1 vcf2 ... -o merged.vcf\n"\
-			"Warning: This program may generate or overwrite two temporary files in this directory, they are %s and %s. If the program ends normal, they would be deleted as well. Although I don't think you have those files in your directory, just be aware of it.", TEMP_FILE_NAME1, TEMP_FILE_NAME2);
+			"Warning: This program may generate or overwrite several temporary files(less than input files) in this directory, they are %s* and %s*. If the program ends normal, they would be deleted as well. Although I don't think you have those files in your directory, just be aware of it.", TEMP_FILE_NAME1, TEMP_FILE_NAME2);
 }
+
+set<string> AllocatedTempFiles;
 
 void removeTempFiles()
 {
-	remove(TEMP_FILE_NAME1);
-	remove(TEMP_FILE_NAME2);
+	for (set<string>::iterator i=AllocatedTempFiles.begin();i!=AllocatedTempFiles.end();++i) remove(i->c_str());
+}
+
+string getTempFileName(const char * Prefix, int n)
+{
+	string Name(Prefix);
+	Name+=to_string(n);
+	AllocatedTempFiles.insert(Name);
+	return Name;
 }
 
 int main (int argc, char ** argv)
@@ -50,21 +60,27 @@ int main (int argc, char ** argv)
 		}
 	}
 	if (InFileNames.size()<2) printHelp();
-	char *LeftFileName, *RightFileName;
-	if (InFileNames.size()==2) merge2(InFileNames[0].c_str(), InFileNames[1].c_str(), OutFile);
-	else
+	uint FilesToMerge=InFileNames.size();
+	const char *Prefix=TEMP_FILE_NAME1, *LPrefix=TEMP_FILE_NAME2;
+	string TempFileName;
+	while(FilesToMerge>1)
 	{
-		merge2(InFileNames[0].c_str(), InFileNames[1].c_str(), TEMP_FILE_NAME1);
-		LeftFileName=TEMP_FILE_NAME1;
-		RightFileName=TEMP_FILE_NAME2;
-		for (uint i=2;i<InFileNames.size()-1;++i)
+		if (FilesToMerge==2)
 		{
-			merge2(LeftFileName, InFileNames[i].c_str(), RightFileName);
-			char * Temp=LeftFileName;
-			LeftFileName=RightFileName;
-			RightFileName=Temp;
+			merge2(InFileNames[0].c_str(),InFileNames[1].c_str(),OutFile);
+			break;
 		}
-		merge2(LeftFileName, InFileNames[InFileNames.size()-1].c_str(), OutFile);
+		for (uint i=0;i<FilesToMerge/2;++i)
+		{
+			TempFileName=getTempFileName(Prefix,i);
+			merge2(InFileNames[i].c_str(), InFileNames[FilesToMerge-1-i].c_str(), TempFileName.c_str());
+			InFileNames[i]=TempFileName;
+		}
+		if (FilesToMerge%2) FilesToMerge=FilesToMerge/2+1;
+		else FilesToMerge/=2;
+		const char * Temp=Prefix;
+		Prefix=LPrefix;
+		LPrefix=Temp;
 	}
 	return 0;
 }
