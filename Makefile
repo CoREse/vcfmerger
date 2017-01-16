@@ -1,5 +1,5 @@
 CC=g++
-CPPFLAGS= -g -Wall -O3
+CPPFLAGS= -g -Wall -O3 -fopenmp
 LDFLAGS=
 LIBS=
 

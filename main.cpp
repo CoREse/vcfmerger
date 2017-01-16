@@ -1,6 +1,6 @@
 /* File: main.cpp
  * Author: CRE
- * Last Edited: Sat Jan 14 14:37:18 2017
+ * Last Edited: Mon Jan 16 11:42:50 2017
  */
 
 #include "vcfmerger.h"
@@ -9,6 +9,7 @@
 #include <string>
 #include <string.h>
 #include "crelib/crelib.h"
+#include <omp.h>
 using namespace std;
 using namespace cre;
 
@@ -35,6 +36,8 @@ string getTempFileName(const char * Prefix, int n)
 	return Name;
 }
 
+uint Threads=1;
+
 int main (int argc, char ** argv)
 {
 	if (argc<=1) printHelp();
@@ -53,6 +56,11 @@ int main (int argc, char ** argv)
 				if (i+1>=argc) printHelp();
 				strcpy(OutFile, argv[++i]);
 			}
+			else if (argv[i][1]=='t'&& argv[i][2]=='\0')
+			{
+				if (i+1>=argc) printHelp();
+				Threads=atoi(argv[++i]);
+			}
 		}
 		else
 		{
@@ -62,7 +70,6 @@ int main (int argc, char ** argv)
 	if (InFileNames.size()<2) printHelp();
 	uint FilesToMerge=InFileNames.size();
 	const char *Prefix=TEMP_FILE_NAME1, *LPrefix=TEMP_FILE_NAME2;
-	string TempFileName;
 	while(FilesToMerge>1)
 	{
 		if (FilesToMerge==2)
@@ -70,9 +77,11 @@ int main (int argc, char ** argv)
 			merge2(InFileNames[0].c_str(),InFileNames[1].c_str(),OutFile);
 			break;
 		}
-		for (uint i=0;i<FilesToMerge/2;++i)
+		omp_set_num_threads(Threads);
+		#pragma omp parallel for
+		for (int i=0;i<FilesToMerge/2;++i)
 		{
-			TempFileName=getTempFileName(Prefix,i);
+			string TempFileName=getTempFileName(Prefix,i);
 			merge2(InFileNames[i].c_str(), InFileNames[FilesToMerge-1-i].c_str(), TempFileName.c_str());
 			InFileNames[i]=TempFileName;
 		}
