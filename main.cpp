@@ -1,6 +1,6 @@
 /* File: main.cpp
  * Author: CRE
- * Last Edited: Mon Jan 16 11:58:14 2017
+ * Last Edited: Mon Jan 16 13:00:43 2017
  */
 
 #include "vcfmerger.h"
@@ -29,11 +29,15 @@ void removeTempFiles()
 	for (set<string>::iterator i=AllocatedTempFiles.begin();i!=AllocatedTempFiles.end();++i) remove(i->c_str());
 }
 
+omp_lock_t NameLock;
 string getTempFileName(const char * Prefix, int n)
 {
 	string Name(Prefix);
 	Name+=to_string(n);
+	
+	omp_set_lock(&NameLock);
 	AllocatedTempFiles.insert(Name);
+	omp_unset_lock(&NameLock);
 	return Name;
 }
 
@@ -79,6 +83,7 @@ int main (int argc, char ** argv)
 			break;
 		}
 		omp_set_num_threads(Threads);
+		omp_init_lock(&NameLock);
 		#pragma omp parallel for
 		for (int i=0;i<FilesToMerge/2;++i)
 		{
