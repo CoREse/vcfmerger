@@ -1,6 +1,6 @@
 /* File: main.cpp
  * Author: CRE
- * Last Edited: Mon Jan 16 11:42:50 2017
+ * Last Edited: Mon Jan 16 11:58:14 2017
  */
 
 #include "vcfmerger.h"
@@ -18,6 +18,7 @@ static inline void printHelp()
 	die("Usage:\n"\
 			"\tvcfmerger vcf1 vcf2 ... > merged.vcf\n"\
 			"or\tvcfmerger vcf1 vcf2 ... -o merged.vcf\n"\
+			"and\t-t n for multithreading\n"\
 			"Warning: This program may generate or overwrite several temporary files(less than input files) in this directory, they are %s* and %s*. If the program ends normal, they would be deleted as well. Although I don't think you have those files in your directory, just be aware of it.", TEMP_FILE_NAME1, TEMP_FILE_NAME2);
 }
 
