@@ -1,6 +1,6 @@
 /* File: main.cpp
  * Author: CRE
- * Last Edited: Mon Jan 16 13:00:43 2017
+ * Last Edited: Mon Jan 16 13:09:54 2017
  */
 
 #include "vcfmerger.h"
@@ -22,23 +22,21 @@ static inline void printHelp()
 			"Warning: This program may generate or overwrite several temporary files(less than input files) in this directory, they are %s* and %s*. If the program ends normal, they would be deleted as well. Although I don't think you have those files in your directory, just be aware of it.", TEMP_FILE_NAME1, TEMP_FILE_NAME2);
 }
 
-set<string> AllocatedTempFiles;
-
-void removeTempFiles()
-{
-	for (set<string>::iterator i=AllocatedTempFiles.begin();i!=AllocatedTempFiles.end();++i) remove(i->c_str());
-}
-
-omp_lock_t NameLock;
 string getTempFileName(const char * Prefix, int n)
 {
 	string Name(Prefix);
 	Name+=to_string(n);
-	
-	omp_set_lock(&NameLock);
-	AllocatedTempFiles.insert(Name);
-	omp_unset_lock(&NameLock);
 	return Name;
+}
+
+uint MostFileNumber=0;
+void removeTempFiles()
+{
+	for (uint i=0;i<MostFileNumber;++i)
+	{
+		remove(getTempFileName(TEMP_FILE_NAME1,i).c_str());
+		remove(getTempFileName(TEMP_FILE_NAME2,i).c_str());
+	}
 }
 
 uint Threads=1;
@@ -74,6 +72,7 @@ int main (int argc, char ** argv)
 	}
 	if (InFileNames.size()<2) printHelp();
 	uint FilesToMerge=InFileNames.size();
+	MostFileNumber=FilesToMerge/2;
 	const char *Prefix=TEMP_FILE_NAME1, *LPrefix=TEMP_FILE_NAME2;
 	while(FilesToMerge>1)
 	{
@@ -83,7 +82,6 @@ int main (int argc, char ** argv)
 			break;
 		}
 		omp_set_num_threads(Threads);
-		omp_init_lock(&NameLock);
 		#pragma omp parallel for
 		for (int i=0;i<FilesToMerge/2;++i)
 		{
